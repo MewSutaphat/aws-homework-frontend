@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AWS Backend Architecture — Notes App</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+    svg { display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+
+<svg width="1260" height="750" viewBox="0 0 1260 750" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <!-- Drop shadow for icons -->
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#00000022"/>
+    </filter>
+  </defs>
+
+  <!-- White background -->
+  <rect width="1260" height="750" fill="white"/>
+
+  <!-- ============================================================ -->
+  <!-- AWS CLOUD OUTER BOX -->
+  <!-- ============================================================ -->
+  <rect x="185" y="20" width="1060" height="700" rx="12"
+        fill="#F8F9FA" stroke="#AAB7B8" stroke-width="2"/>
+
+  <!-- AWS badge -->
+  <rect x="198" y="30" width="34" height="22" rx="4" fill="#FF9900"/>
+  <text x="215" y="45" font-family="Arial" font-size="9" font-weight="bold"
+        fill="white" text-anchor="middle">aws</text>
+  <text x="240" y="47" font-family="Arial" font-size="14" fill="#444">AWS Cloud</text>
+
+  <!-- ============================================================ -->
+  <!-- BACKEND SOLUTION DASHED BOX -->
+  <!-- ============================================================ -->
+  <rect x="252" y="88" width="930" height="597" rx="8"
+        fill="none" stroke="#7FB3D3" stroke-width="1.5" stroke-dasharray="9,4"/>
+  <text x="717" y="113" font-family="Arial" font-size="13" fill="#555"
+        text-anchor="middle">Notes App Backend</text>
+
+  <!-- ============================================================ -->
+  <!-- FLOW LINES (drawn before icons so icons appear on top) -->
+  <!-- ============================================================ -->
+
+  <!-- ① Client → API Gateway (horizontal, y=408) -->
+  <line x1="150" y1="408" x2="430" y2="408"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ② API Gateway ↔ Cognito JWT Authorizer (vertical, x=470) -->
+  <line x1="470" y1="365" x2="470" y2="232"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ③ API Gateway → Lambda Functions (horizontal, y=408) -->
+  <line x1="512" y1="408" x2="632" y2="408"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ④ Lambda → Services (branching tree) -->
+  <!-- Main horizontal to junction node -->
+  <line x1="710" y1="408" x2="845" y2="408"
+        stroke="#555" stroke-width="1.5"/>
+  <!-- Vertical distribution line (Cognito center y=212 → SNS center y=577) -->
+  <line x1="845" y1="212" x2="845" y2="577"
+        stroke="#555" stroke-width="1.5"/>
+  <!-- Branch → Cognito User Pool -->
+  <line x1="845" y1="212" x2="876" y2="212"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Branch → S3 -->
+  <line x1="845" y1="332" x2="876" y2="332"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Branch → DynamoDB -->
+  <line x1="845" y1="452" x2="876" y2="452"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Branch → SNS -->
+  <line x1="845" y1="577" x2="876" y2="577"
+        stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- STEP CIRCLES -->
+  <!-- ============================================================ -->
+
+  <!-- Step 1: Client → API Gateway -->
+  <circle cx="290" cy="408" r="15" fill="#3B6FCC"/>
+  <text x="290" y="413" font-family="Arial" font-size="13" font-weight="bold"
+        fill="white" text-anchor="middle">1</text>
+
+  <!-- Step 2: API Gateway ↔ Cognito Auth -->
+  <circle cx="470" cy="298" r="15" fill="#3B6FCC"/>
+  <text x="470" y="303" font-family="Arial" font-size="13" font-weight="bold"
+        fill="white" text-anchor="middle">2</text>
+
+  <!-- Step 3: API Gateway → Lambda -->
+  <circle cx="570" cy="408" r="15" fill="#3B6FCC"/>
+  <text x="570" y="413" font-family="Arial" font-size="13" font-weight="bold"
+        fill="white" text-anchor="middle">3</text>
+
+  <!-- Step 4: Lambda → Services -->
+  <circle cx="775" cy="408" r="15" fill="#3B6FCC"/>
+  <text x="775" y="413" font-family="Arial" font-size="13" font-weight="bold"
+        fill="white" text-anchor="middle">4</text>
+
+  <!-- ============================================================ -->
+  <!-- CLIENT ICON (center ≈ 92, 408) -->
+  <!-- ============================================================ -->
+  <g transform="translate(55, 372)" filter="url(#shadow)">
+    <!-- Monitor body -->
+    <rect x="5" y="0" width="72" height="54" rx="5" fill="#555"/>
+    <!-- Screen -->
+    <rect x="10" y="5" width="62" height="44" rx="2" fill="#87CEEB"/>
+    <!-- Screen lines -->
+    <line x1="16" y1="18" x2="66" y2="18" stroke="white" stroke-width="1.5" stroke-opacity="0.5"/>
+    <line x1="16" y1="28" x2="56" y2="28" stroke="white" stroke-width="1.5" stroke-opacity="0.5"/>
+    <line x1="16" y1="38" x2="62" y2="38" stroke="white" stroke-width="1.5" stroke-opacity="0.5"/>
+    <!-- Stand -->
+    <rect x="32" y="54" width="18" height="10" fill="#555"/>
+    <!-- Base -->
+    <rect x="18" y="64" width="46" height="5" rx="2" fill="#555"/>
+  </g>
+  <text x="92" y="456" font-family="Arial" font-size="13" fill="#333" text-anchor="middle">Client</text>
+
+  <!-- ============================================================ -->
+  <!-- API GATEWAY ICON  (icon rect: 432,373 → 508,443 | center: 470,408) -->
+  <!-- ============================================================ -->
+  <g transform="translate(432, 373)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#8C4FFF"/>
+    <!-- Portal frame -->
+    <rect x="9" y="7" width="58" height="56" rx="5" fill="none" stroke="white" stroke-width="2.5"/>
+    <!-- Center divider -->
+    <line x1="38" y1="7" x2="38" y2="63" stroke="white" stroke-width="1.5"/>
+    <!-- </> symbol -->
+    <text x="38" y="47" font-family="monospace" font-size="16" font-weight="bold"
+          fill="white" text-anchor="middle">&lt;/&gt;</text>
+  </g>
+  <text x="470" y="460" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">API Gateway</text>
+
+  <!-- ============================================================ -->
+  <!-- COGNITO JWT AUTHORIZER ICON (icon: 432,162 | center: 470,197) -->
+  <!-- ============================================================ -->
+  <g transform="translate(432, 162)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#DD344C"/>
+    <!-- Shield -->
+    <path d="M 38 10 L 57 21 L 57 44 Q 57 58 38 64 Q 19 58 19 44 L 19 21 Z"
+          fill="white" fill-opacity="0.92"/>
+    <!-- Lock body -->
+    <rect x="29" y="38" width="20" height="17" rx="3" fill="#DD344C"/>
+    <!-- Lock shackle -->
+    <path d="M 32 38 L 32 31 Q 32 24 38 24 Q 44 24 44 31 L 44 38"
+          fill="none" stroke="#DD344C" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <text x="470" y="248" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Cognito</text>
+  <text x="470" y="262" font-family="Arial" font-size="11" fill="#666" text-anchor="middle">JWT Authorizer</text>
+
+  <!-- ============================================================ -->
+  <!-- LAMBDA FUNCTIONS ICON (icon: 632,373 | center: 670,408) -->
+  <!-- ============================================================ -->
+  <g transform="translate(632, 373)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#FF9900"/>
+    <!-- Lambda λ -->
+    <text x="38" y="52" font-family="Arial" font-size="42" font-weight="bold"
+          fill="white" text-anchor="middle">λ</text>
+  </g>
+  <text x="670" y="460" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Lambda</text>
+  <text x="670" y="474" font-family="Arial" font-size="11" fill="#666" text-anchor="middle">Functions</text>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT SIDE — AWS BACKEND SERVICES -->
+  <!-- ============================================================ -->
+
+  <!-- ── COGNITO USER POOL (icon: 876,177 | center: 914,212) ── -->
+  <g transform="translate(876, 177)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#DD344C"/>
+    <!-- User silhouette -->
+    <circle cx="38" cy="23" r="14" fill="white"/>
+    <path d="M 8 68 Q 38 48 68 68" fill="white"/>
+  </g>
+  <text x="914" y="263" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Cognito</text>
+  <text x="914" y="277" font-family="Arial" font-size="11" fill="#666" text-anchor="middle">User Pool</text>
+
+  <!-- ── AMAZON S3 (icon: 876,297 | center: 914,332) ── -->
+  <g transform="translate(876, 297)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#569A31"/>
+    <!-- Bucket shape -->
+    <ellipse cx="38" cy="18" rx="22" ry="9" fill="white"/>
+    <path d="M 16 18 L 16 55 Q 16 63 38 63 Q 60 63 60 55 L 60 18"
+          fill="white" fill-opacity="0.72"/>
+    <ellipse cx="38" cy="18" rx="22" ry="9" fill="white"/>
+    <!-- S3 label inside bucket -->
+    <text x="38" y="48" font-family="Arial" font-size="16" font-weight="bold"
+          fill="#569A31" text-anchor="middle">S3</text>
+  </g>
+  <text x="914" y="383" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Amazon S3</text>
+  <text x="914" y="397" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">userList.txt</text>
+
+  <!-- ── DYNAMODB (icon: 876,417 | center: 914,452) ── -->
+  <g transform="translate(876, 417)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#4D27AA"/>
+    <!-- Cylinder -->
+    <ellipse cx="38" cy="16" rx="22" ry="8" fill="white" fill-opacity="0.92"/>
+    <rect x="16" y="16" width="44" height="32" fill="white" fill-opacity="0.78"/>
+    <ellipse cx="38" cy="48" rx="22" ry="8" fill="white"/>
+    <line x1="16" y1="26" x2="60" y2="26" stroke="#4D27AA" stroke-width="0.8"/>
+    <line x1="16" y1="36" x2="60" y2="36" stroke="#4D27AA" stroke-width="0.8"/>
+  </g>
+  <text x="914" y="503" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">DynamoDB</text>
+  <text x="914" y="517" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">Notes Storage</text>
+
+  <!-- ── AMAZON SNS (icon: 876,542 | center: 914,577) ── -->
+  <g transform="translate(876, 542)" filter="url(#shadow)">
+    <rect width="76" height="70" rx="10" fill="#E7157B"/>
+    <!-- Bell body -->
+    <path d="M 38 12 C 22 16 16 28 16 42 L 16 55 L 60 55 L 60 42 C 60 28 54 16 38 12 Z"
+          fill="white"/>
+    <!-- Bell top knob -->
+    <circle cx="38" cy="10" r="5" fill="white"/>
+    <!-- Bell clapper arc -->
+    <path d="M 27 55 Q 38 65 49 55" fill="none" stroke="white" stroke-width="3"
+          stroke-linecap="round"/>
+    <!-- Signal waves left -->
+    <path d="M 8 32 Q 4 42 8 52" fill="none" stroke="white" stroke-width="1.8"
+          stroke-linecap="round"/>
+    <!-- Signal waves right -->
+    <path d="M 68 32 Q 72 42 68 52" fill="none" stroke="white" stroke-width="1.8"
+          stroke-linecap="round"/>
+  </g>
+  <text x="914" y="628" font-family="Arial" font-size="12" fill="#333" text-anchor="middle">Amazon SNS</text>
+  <text x="914" y="642" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">Email Notifications</text>
+
+  <!-- ============================================================ -->
+  <!-- ANNOTATIONS -->
+  <!-- ============================================================ -->
+
+  <!-- Step 1 label -->
+  <text x="220" y="400" font-family="Arial" font-size="10" fill="#888">HTTP Request</text>
+
+  <!-- Step 2 label -->
+  <text x="487" y="278" font-family="Arial" font-size="10" fill="#888" font-style="italic">/notes/* only</text>
+
+  <!-- Service function labels (right of service icons) -->
+  <text x="960" y="212" font-family="Arial" font-size="10" fill="#777">Auth / Verify / Logout</text>
+  <text x="960" y="332" font-family="Arial" font-size="10" fill="#777">Read / Write userId</text>
+  <text x="960" y="452" font-family="Arial" font-size="10" fill="#777">CRUD Notes</text>
+  <text x="960" y="577" font-family="Arial" font-size="10" fill="#777">Notify on Action</text>
+
+  <!-- ============================================================ -->
+  <!-- LEGEND (bottom strip inside dashed box) -->
+  <!-- ============================================================ -->
+  <rect x="253" y="660" width="928" height="20" rx="4" fill="#F0F4F8"/>
+  <circle cx="278" cy="670" r="7" fill="#3B6FCC"/>
+  <text x="278" y="674" font-family="Arial" font-size="8" font-weight="bold"
+        fill="white" text-anchor="middle">1</text>
+  <text x="291" y="674" font-family="Arial" font-size="10" fill="#555">Client → API Gateway</text>
+
+  <circle cx="415" cy="670" r="7" fill="#3B6FCC"/>
+  <text x="415" y="674" font-family="Arial" font-size="8" font-weight="bold"
+        fill="white" text-anchor="middle">2</text>
+  <text x="428" y="674" font-family="Arial" font-size="10" fill="#555">JWT Token Validation</text>
+
+  <circle cx="565" cy="670" r="7" fill="#3B6FCC"/>
+  <text x="565" y="674" font-family="Arial" font-size="8" font-weight="bold"
+        fill="white" text-anchor="middle">3</text>
+  <text x="578" y="674" font-family="Arial" font-size="10" fill="#555">Route to Lambda Handler</text>
+
+  <circle cx="735" cy="670" r="7" fill="#3B6FCC"/>
+  <text x="735" y="674" font-family="Arial" font-size="8" font-weight="bold"
+        fill="white" text-anchor="middle">4</text>
+  <text x="748" y="674" font-family="Arial" font-size="10" fill="#555">AWS Service Calls (Cognito / S3 / DynamoDB / SNS)</text>
+
+  <!-- Region info -->
+  <text x="1150" y="712" font-family="Arial" font-size="10" fill="#888"
+        text-anchor="middle">Region: ap-southeast-7</text>
+  <text x="1150" y="726" font-family="Arial" font-size="9" fill="#aaa"
+        text-anchor="middle">note-api (REST)</text>
+
+</svg>
+
+</body>
+</html>
