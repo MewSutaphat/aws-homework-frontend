@@ -12,6 +12,7 @@ const dialogType = ref<'success' | 'error'>('success')
 const showDialog = ref(false)
 const showGuestDialog = ref(false)
 
+
 async function handleSubmit() {
   if (sessionStorage.getItem('guest')) {
     showGuestDialog.value = true
