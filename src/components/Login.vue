@@ -2,6 +2,12 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
+import Button from 'primevue/button'
+import Select from 'primevue/select'
+import Message from 'primevue/message'
+import FloatLabel from 'primevue/floatlabel'
 
 const { login, signup, confirmCode } = useAuth()
 const router = useRouter()
@@ -23,7 +29,11 @@ const errorMessage = ref('')
 const successMessage = ref('')
 const loading = ref(false)
 
-const groups = ['developers', 'leaders', 'admins']
+const groupOptions = [
+  { label: 'Developers', value: 'developers' },
+  { label: 'Leaders', value: 'leaders' },
+  { label: 'Admins', value: 'admins' },
+]
 
 async function handleLogin() {
   errorMessage.value = ''
@@ -75,241 +85,106 @@ function switchMode(target: Mode) {
 </script>
 
 <template>
-  <div class="login-page">
-    <div class="login-card">
-      <h1 class="app-title">Notes Manager</h1>
+  <!-- Full-screen centered layout, mobile-first -->
+  <div class="min-h-screen w-full flex items-center justify-center bg-surface-50 p-4 sm:p-8">
+    <div class="w-full max-w-sm sm:max-w-md bg-surface-0 rounded-xl shadow-lg p-6 sm:p-10">
 
-      <!-- Login -->
-      <form v-if="mode === 'login'" @submit.prevent="handleLogin">
-        <h2 class="form-title">Sign In</h2>
-        <div class="form-group">
-          <label>Email</label>
-          <input v-model="email" type="email" placeholder="Enter email" required />
+      <!-- App title -->
+      <div class="text-center mb-8">
+        <i class="pi pi-file-edit text-4xl text-primary mb-3 block" />
+        <h1 class="text-2xl font-bold text-surface-800">Notes Manager</h1>
+      </div>
+
+      <!-- Login Form -->
+      <form v-if="mode === 'login'" @submit.prevent="handleLogin" class="flex flex-col gap-5">
+        <h2 class="text-lg font-semibold text-surface-700 mb-1">Sign In</h2>
+
+        <FloatLabel>
+          <InputText id="login-email" v-model="email" type="email" class="w-full" required autocomplete="email" />
+          <label for="login-email">Email</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <Password id="login-password" v-model="password" class="w-full" :feedback="false" toggleMask required
+            inputClass="w-full" autocomplete="current-password" />
+          <label for="login-password">Password</label>
+        </FloatLabel>
+
+        <Message v-if="errorMessage" severity="error" :closable="false" class="w-full">{{ errorMessage }}</Message>
+
+        <Button type="submit" label="Sign In" icon="pi pi-sign-in" class="w-full" :loading="loading" />
+
+        <div class="flex flex-wrap items-center justify-center gap-2 text-sm mt-1">
+          <Button label="Create an account" link size="small" @click="switchMode('signup')" />
+          <span class="text-surface-400">·</span>
+          <Button label="Confirm account" link size="small" @click="switchMode('confirm')" />
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input v-model="password" type="password" placeholder="Enter password" required />
-        </div>
-        <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
-        <button type="submit" class="btn btn-primary" :disabled="loading">
-          {{ loading ? 'Signing in...' : 'Sign In' }}
-        </button>
-        <div class="links">
-          <button type="button" class="link-btn" @click="switchMode('signup')">Create an account</button>
-          <span class="divider">·</span>
-          <button type="button" class="link-btn" @click="switchMode('confirm')">Confirm account</button>
-        </div>
-        <div class="links">
-          <button type="button" class="link-btn" @click="continueAsGuest">Continue as Guest</button>
+        <div class="text-center">
+          <Button label="Continue as Guest" link size="small" icon="pi pi-user" @click="continueAsGuest" />
         </div>
       </form>
 
-      <!-- Sign Up -->
-      <form v-else-if="mode === 'signup'" @submit.prevent="handleSignup">
-        <h2 class="form-title">Create Account</h2>
-        <div class="form-group">
-          <label>Name</label>
-          <input v-model="name" type="text" placeholder="Enter your name" required />
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input v-model="email" type="email" placeholder="Enter email" required />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input v-model="password" type="password" placeholder="Enter password" required />
-        </div>
-        <div class="form-group">
-          <label>Group</label>
-          <select v-model="group">
-            <option v-for="g in groups" :key="g" :value="g">{{ g }}</option>
-          </select>
-        </div>
-        <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
-        <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
-        <button type="submit" class="btn btn-primary" :disabled="loading">
-          {{ loading ? 'Creating...' : 'Sign Up' }}
-        </button>
-        <div class="links">
-          <button type="button" class="link-btn" @click="switchMode('login')">Back to Sign In</button>
+      <!-- Sign Up Form -->
+      <form v-else-if="mode === 'signup'" @submit.prevent="handleSignup" class="flex flex-col gap-5">
+        <h2 class="text-lg font-semibold text-surface-700 mb-1">Create Account</h2>
+
+        <FloatLabel>
+          <InputText id="signup-name" v-model="name" type="text" class="w-full" required autocomplete="name" />
+          <label for="signup-name">Name</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <InputText id="signup-email" v-model="email" type="email" class="w-full" required autocomplete="email" />
+          <label for="signup-email">Email</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <Password id="signup-password" v-model="password" class="w-full" toggleMask required
+            inputClass="w-full" autocomplete="new-password" />
+          <label for="signup-password">Password</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <Select id="signup-group" v-model="group" :options="groupOptions" optionLabel="label" optionValue="value"
+            class="w-full" />
+          <label for="signup-group">Group</label>
+        </FloatLabel>
+
+        <Message v-if="errorMessage" severity="error" :closable="false" class="w-full">{{ errorMessage }}</Message>
+        <Message v-if="successMessage" severity="success" :closable="false" class="w-full">{{ successMessage }}</Message>
+
+        <Button type="submit" label="Sign Up" icon="pi pi-user-plus" class="w-full" :loading="loading" />
+
+        <div class="text-center">
+          <Button label="Back to Sign In" link size="small" icon="pi pi-arrow-left" @click="switchMode('login')" />
         </div>
       </form>
 
-      <!-- Confirm Code -->
-      <form v-else-if="mode === 'confirm'" @submit.prevent="handleConfirm">
-        <h2 class="form-title">Confirm Account</h2>
-        <div class="form-group">
-          <label>Email</label>
-          <input v-model="email" type="email" placeholder="Enter email" required />
-        </div>
-        <div class="form-group">
-          <label>Confirmation Code</label>
-          <input v-model="code" type="text" placeholder="Enter code from email" required />
-        </div>
-        <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
-        <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
-        <button type="submit" class="btn btn-primary" :disabled="loading">
-          {{ loading ? 'Confirming...' : 'Confirm' }}
-        </button>
-        <div class="links">
-          <button type="button" class="link-btn" @click="switchMode('login')">Back to Sign In</button>
+      <!-- Confirm Code Form -->
+      <form v-else-if="mode === 'confirm'" @submit.prevent="handleConfirm" class="flex flex-col gap-5">
+        <h2 class="text-lg font-semibold text-surface-700 mb-1">Confirm Account</h2>
+
+        <FloatLabel>
+          <InputText id="confirm-email" v-model="email" type="email" class="w-full" required autocomplete="email" />
+          <label for="confirm-email">Email</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <InputText id="confirm-code" v-model="code" type="text" class="w-full" required
+            placeholder=" " autocomplete="one-time-code" />
+          <label for="confirm-code">Confirmation Code</label>
+        </FloatLabel>
+
+        <Message v-if="errorMessage" severity="error" :closable="false" class="w-full">{{ errorMessage }}</Message>
+        <Message v-if="successMessage" severity="success" :closable="false" class="w-full">{{ successMessage }}</Message>
+
+        <Button type="submit" label="Confirm" icon="pi pi-check" class="w-full" :loading="loading" />
+
+        <div class="text-center">
+          <Button label="Back to Sign In" link size="small" icon="pi pi-arrow-left" @click="switchMode('login')" />
         </div>
       </form>
+
     </div>
   </div>
 </template>
-
-<style scoped>
-.login-page {
-  min-height: 100vh;
-  background-color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 48px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-.app-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #1e293b;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.form-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 24px;
-}
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  color: #475569;
-  margin-bottom: 6px;
-  font-size: 0.9rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  color: #1e293b;
-  background: #ffffff;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-
-.form-group select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  color: #1e293b;
-  background: #ffffff;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.btn {
-  width: 100%;
-  padding: 11px;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.15s;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background-color: #3b82f6;
-  color: #ffffff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #2563eb;
-}
-
-.links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  color: #3b82f6;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-}
-
-.link-btn:hover {
-  color: #2563eb;
-}
-
-.divider {
-  color: #94a3b8;
-  font-size: 0.875rem;
-}
-
-.msg {
-  font-size: 0.875rem;
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  border-radius: 6px;
-}
-
-.msg.error {
-  color: #dc2626;
-  background-color: #fef2f2;
-}
-
-.msg.success {
-  color: #16a34a;
-  background-color: #f0fdf4;
-}
-
-.guest-section {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
-  text-align: center;
-}
-</style>
