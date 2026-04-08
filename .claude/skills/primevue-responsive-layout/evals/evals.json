@@ -1,0 +1,46 @@
+{
+  "skill_name": "primevue-responsive-layout",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "สร้าง layout หน้าหลักของ web app ด้วย PrimeVue และ Tailwind ให้มี Menubar ด้านบน sidebar ซ้ายมือ และ content area ด้านขวา บน mobile ให้ sidebar กลายเป็น Drawer ที่เปิดได้จาก hamburger button ทุก section ต้องเต็มจอในแต่ละ breakpoint",
+      "expected_output": "Vue SFC (.vue) ที่มี Menubar, Drawer สำหรับ mobile, aside hidden บน mobile แสดงบน lg+, main content ใช้ flex-1 w-full min-w-0",
+      "files": [],
+      "expectations": [
+        "Component uses mobile-first approach: default styles for mobile, sm: and lg: prefixes for larger screens",
+        "Sidebar uses `hidden lg:flex` class and is not visible on mobile",
+        "A PrimeVue Drawer component exists for mobile/tablet navigation",
+        "Main content area has `flex-1 w-full min-w-0` classes",
+        "PrimeVue surface tokens are used (bg-surface-*, border-surface-*) rather than raw Tailwind gray colors",
+        "A hamburger/menu button triggers the Drawer and is hidden on lg+ screens"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ฉันมีหน้า Dashboard ที่ต้องแสดง Card 6 ใบ และ DataTable 1 ตัว ช่วยทำให้ responsive โดย Card จะเรียง 1 คอลัมน์บน mobile, 2 คอลัมน์บน tablet, 3 คอลัมน์บน desktop และ DataTable ต้อง scroll ได้ในแนวนอนบน mobile ใช้ PrimeVue Card และ DataTable กับ Tailwind",
+      "expected_output": "Vue SFC ที่มี grid responsive สำหรับ Card และ DataTable ที่มี overflow-x-auto wrapper",
+      "files": [],
+      "expectations": [
+        "Card grid uses `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` classes",
+        "DataTable is wrapped in a div with `overflow-x-auto` and `min-w-0 w-full`",
+        "6 Card components are present (can use v-for with sample data)",
+        "DataTable has sample columns defined in script setup",
+        "Layout is full-width (w-full) without a fixed max-width container"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "ช่วยสร้าง AppLayout.vue component ที่ reusable สำหรับทั้ง project รองรับ slot สำหรับ content หลัก มี Header ที่ใช้ PrimeVue Toolbar และ Sidebar ที่พับได้บน desktop ด้วย ต้องการให้ทำงานร่วมกับ Vue Router ด้วย",
+      "expected_output": "AppLayout.vue ที่มี default slot, Toolbar header, collapsible sidebar บน desktop, Drawer บน mobile, รองรับ router-view",
+      "files": [],
+      "expectations": [
+        "Component uses `<slot />` or `<slot name='default' />` for main content",
+        "PrimeVue Toolbar component is used in the header",
+        "Desktop sidebar has a collapse toggle (ref boolean + transition or width class toggle)",
+        "Mobile navigation uses PrimeVue Drawer",
+        "Component is compatible with Vue Router (uses router-link or router-view)",
+        "Script uses `<script setup>` composition API syntax"
+      ]
+    }
+  ]
+}

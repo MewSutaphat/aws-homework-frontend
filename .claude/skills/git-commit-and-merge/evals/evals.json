@@ -1,0 +1,48 @@
+{
+  "skill_name": "git-commit-and-merge",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "ฉันแก้ไข Login.vue ให้ responsive ด้วย PrimeVue และ Tailwind แล้ว ช่วย commit และ merge เข้า develop ให้หน่อย แต่ยังไม่ต้อง push",
+      "expected_output": "Conventional commit message ที่เหมาะสม (feat หรือ style scope auth/login), แสดงขั้นตอน git add, git commit, git checkout develop, git merge, พร้อม push reminder ที่ชัดเจน",
+      "files": [],
+      "expectations": [
+        "Proposed commit message follows Conventional Commits format: type(scope): description",
+        "Commit type is feat or style (appropriate for UI/responsive change)",
+        "Scope references login, auth, or similar (inferred from Login.vue)",
+        "The skill asks for user confirmation before committing",
+        "Shows git add command before git commit",
+        "Shows git checkout develop and git merge commands",
+        "Returns user to original branch after merge (git checkout back)",
+        "Ends with a clear push reminder: git push origin develop",
+        "Mentions that push will trigger S3 auto-deploy"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "มีไฟล์ที่เปลี่ยนแปลงหลายไฟล์ ทั้ง src/components/Header.vue, src/router/index.ts, และ tailwind.config.js ช่วยสร้าง commit message ที่เหมาะสมและ merge เข้า develop ให้หน่อย",
+      "expected_output": "Commit message ที่รวม scope หลายไฟล์ หรือ omit scope เพราะมีหลาย module, แสดงขั้นตอนครบ และ push reminder",
+      "files": [],
+      "expectations": [
+        "Proposed commit message follows Conventional Commits format",
+        "When multiple unrelated files changed, scope is omitted or a broad scope is used",
+        "Shows staging commands for all affected files",
+        "Includes git checkout develop and git merge steps",
+        "Ends with push reminder mentioning GitHub Actions S3 deploy"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "ช่วย commit งานที่ทำไปวันนี้แล้ว merge เข้า develop ได้เลย แต่อย่าลืมว่ายังมีไฟล์ .env อยู่ในโฟลเดอร์ด้วย อย่าเพิ่ง commit ไฟล์นั้น",
+      "expected_output": "Skill ต้องระบุว่าจะ skip .env, สร้าง commit message จากไฟล์อื่น, และ merge เข้า develop พร้อม push reminder",
+      "files": [],
+      "expectations": [
+        "Explicitly warns that .env file will NOT be staged/committed",
+        "Uses git add with specific files or mentions excluding .env",
+        "Still generates a valid Conventional Commits message for the non-.env changes",
+        "Includes merge to develop steps",
+        "Ends with push reminder"
+      ]
+    }
+  ]
+}
