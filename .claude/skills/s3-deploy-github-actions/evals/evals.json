@@ -1,0 +1,49 @@
+{
+  "skill_name": "s3-deploy-github-actions",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "ช่วยสร้าง GitHub Actions workflow สำหรับ deploy Vite project ไปที่ S3 bucket ชื่อ 'my-app-develop' ทุกครั้งที่ push ขึ้น develop branch โดยใช้ AWS credentials จาก GitHub Secrets และต้องมีการตรวจสอบว่า bucket เข้าถึงได้ก่อน deploy จริง",
+      "expected_output": ".github/workflows/deploy-develop.yml ที่ trigger บน push to develop, verify secrets, verify bucket access, build Vite, sync to S3",
+      "files": [],
+      "expectations": [
+        "Workflow triggers on `push` to `develop` branch only",
+        "A step checks that required secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, S3_BUCKET_NAME) are not empty, and fails with a clear message if any are missing",
+        "Uses `aws-actions/configure-aws-credentials@v4` action for authentication",
+        "Includes `aws sts get-caller-identity` to verify the credentials work",
+        "Checks S3 bucket accessibility with `aws s3 ls` before deploying",
+        "Uses `npm ci` (not npm install) for dependency installation",
+        "HTML files use `no-cache` cache-control header",
+        "Non-HTML asset files use `immutable` cache-control header",
+        "Build output directory existence is verified before S3 sync"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ต้องการ setup CI/CD ให้ auto deploy หน้าเว็บ Next.js (static export, output dir = 'out') ขึ้น S3 พร้อมทั้ง invalidate CloudFront ด้วย ทุกครั้งที่ push ขึ้น develop และขอ script ตรวจสอบ AWS config ในเครื่อง local ด้วยนะ",
+      "expected_output": "GitHub Actions workflow สำหรับ Next.js + CloudFront invalidation และ check-aws-config.sh script",
+      "files": [],
+      "expectations": [
+        "Build directory is set to `out` (not `dist`) throughout the workflow",
+        "CloudFront invalidation step is present and creates invalidation for `/*`",
+        "CloudFront step is conditional — only runs when CLOUDFRONT_DIST_ID secret is set",
+        "A local shell script (check-aws-config.sh) is provided with aws sts get-caller-identity check",
+        "The local script checks aws CLI installation, credentials, and optionally bucket access",
+        "Workflow summary step writes deployment info to GITHUB_STEP_SUMMARY"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "มีปัญหา deploy ไม่ขึ้น GitHub Actions บอก error ว่า 'Unable to locate credentials' ช่วยบอกหน่อยว่าต้องไปเซ็ต GitHub Secrets ที่ไหน และ IAM user ต้องมี permission อะไรบ้าง พร้อมสร้าง workflow ใหม่ที่ถูกต้องให้ด้วย",
+      "expected_output": "คำอธิบายขั้นตอนการ set GitHub Secrets, IAM policy JSON, และ workflow ที่ถูกต้อง",
+      "files": [],
+      "expectations": [
+        "Response explains exactly where to find GitHub Secrets: Repo → Settings → Secrets and variables → Actions",
+        "Lists all required secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, S3_BUCKET_NAME",
+        "Provides IAM policy JSON with s3:PutObject, s3:DeleteObject, s3:ListBucket, s3:GetBucketLocation",
+        "The generated workflow uses `aws-actions/configure-aws-credentials@v4`",
+        "Includes a verification step that runs `aws sts get-caller-identity`"
+      ]
+    }
+  ]
+}
