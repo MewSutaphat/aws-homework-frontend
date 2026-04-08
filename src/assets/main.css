@@ -1,4 +1,6 @@
 @import './base.css';
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css';
 
 #app {
   width: 100%;
